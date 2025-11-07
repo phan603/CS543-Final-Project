@@ -1,0 +1,1 @@
+This folder contains the contents of the modern footage used for the VSR model
