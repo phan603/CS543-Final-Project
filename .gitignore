@@ -1,0 +1,13 @@
+DeOldify/
+DDColor/
+ddcolor_env/
+.venv_deoldify/
+.venv*/
+__pycache__/
+frames_in/
+frames_out/
+frames_out1/
+frames_out2/
+video_test/
+result_images/
+models/
