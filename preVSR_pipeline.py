@@ -31,9 +31,10 @@ def blob_detection(gray, freq, texture, min_radius, max_radius, num_sigma, thres
             filtered_blobs.append((y, x, r))
 
     filtered_blobs = np.array(filtered_blobs)
-
+    if filtered_blobs.shape[0] == 0:
+        return np.empty((0, 3), dtype=np.float32)
     coords = np.array([[y, x] for y, x, _ in filtered_blobs])
-    
+
     nbrs = NearestNeighbors(radius=10).fit(coords)
     neighbors = nbrs.radius_neighbors(coords, return_distance=False)
 
@@ -80,7 +81,7 @@ def preProcess(in_dir,out_dir):
     TEXTURE_THRESHOLD_LARGE = 0.7
     contrast_threshold = .25
 
-    start_idx = 0  # change this if you want
+    start_idx = 60  # change this if you want
     files = sorted(in_dir.glob("*.png"))[start_idx:]
     assert files, f"no frames found in {in_dir}"
 
@@ -119,7 +120,7 @@ def preProcess(in_dir,out_dir):
 
         for y, x, r in all_detected_blobs:
             cv2.circle(mask, (int(x), int(y)), int(r), 255, -1)
-        restored = cv2.inpaint(image, mask, 3, cv2.INPAINT_NS)
+        restored = cv2.inpaint(image, mask, 25, cv2.INPAINT_NS)
         cv2.imwrite(str(out_path),restored)
         # DeOldify colorized frame (RGB PIL)
         out_img = colorizer.get_transformed_image(str(out_path), render_factor=35, post_process=True)
@@ -156,7 +157,7 @@ def preProcess(in_dir,out_dir):
 
         cv2.imwrite(str(out_path), final_bgr)
 
-        if i % 50 == 0:
+        if i % 10 == 0:
             print(f"done {i}/{len(files)}")
 
     print("all frames preprocessed into ",out_dir)
